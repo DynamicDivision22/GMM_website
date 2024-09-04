@@ -3,7 +3,7 @@
     <button type="button" data-bs-target="#featuredContent" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
 
     <!-- Create slides for featured makers-->
-    <% if (locals.featured.length > 0) { %>
+    <% if (locals.featured && locals.featured.length > 0) { %>
       <% let counter = 1; %>
       <% locals.featured.forEach(maker => { %>
         <button type="button" data-bs-target="#featuredContent" data-bs-slide-to="<%= counter %>" aria-label="Slide <%= counter + 1 %>"></button>
@@ -24,7 +24,7 @@
     </div>
 
     <!-- Populate slides for featured makers -->
-    <% if (locals.featured.length > 0) { %>
+    <% if (locals.featured && locals.featured.length > 0) { %>
       <% locals.featured.forEach(maker => { %>
         <div class="carousel-item" style="background: url('<%= maker.featured_background %>'); background-repeat: no-repeat; background-size: cover; background-position: top top;">
           <div class="container">
