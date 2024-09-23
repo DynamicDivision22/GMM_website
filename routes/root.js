@@ -49,4 +49,25 @@ router.get('/error/unauthorized', auth.guestAccess, async (req, res) => res.rend
   clean: convert.convert,
 }));
 
+/*************************************************************************************************/
+/* Render articles pages
+/*************************************************************************************************/
+router.get('/article-teaching', auth.guestAccess, async (req, res) => res.render('articles/article-teaching', {
+    session: req.session,
+    featured: await accountController.getFeaturedAccounts(),
+    clean: convert.convert,
+  }));
+
+router.get('/article-making', auth.guestAccess, async (req, res) => res.render('articles/article-making', {
+    session: req.session,
+    featured: await accountController.getFeaturedAccounts(),
+    clean: convert.convert,
+  }));
+
+router.get('/article-sharing', auth.guestAccess, async (req, res) => res.render('articles/article-sharing', {
+    session: req.session,
+    featured: await accountController.getFeaturedAccounts(),
+    clean: convert.convert,
+  }));
+
 module.exports = router;

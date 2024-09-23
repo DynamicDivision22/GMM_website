@@ -18,7 +18,7 @@
 		<div class="container px-4 py-2" id="makers" data-aos="fade-right">
 			<h2 class="pb-1 border-bottom">MAKER PRODUCTS</h2>
 
-			<% if (locals.products.length > 0) { %>
+			<% if (locals.featured && locals.products.length > 0) { %>
 			<div class="row row-cols-1 row-cols-md-3 g-4">
 				<% locals.products.forEach(product => { %>
 					<div class="col-sm">
