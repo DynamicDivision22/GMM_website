@@ -1,0 +1,36 @@
+=<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<%- include("./partials/header") %>
+</head>
+<body>
+
+	<!-- Include navigation-->
+	<%- include("./partials/navigation") %>
+
+	<!-- Include featured-->
+	<%- include("./partials/featured") %>
+
+ <!-- BEGIN PAGE CONTENT-->
+ <div class="content-container content-wrap">
+    <h2 class="pb-1 text-center">Virtual Market</h2>
+    
+    <br>
+    <div class="container market-container">
+      
+        <!-- Clickable image that redirects to Frame VR -->
+        <a href="https://framevr.io/gsmm" target="_blank">
+        <img src="/images/market.png" alt="Virtual Market Image" style="max-width: 100%; height: auto; border-radius: 10px; display: block; margin: 0 auto;">
+        </a>
+    </div>
+
+  <!-- END PAGE CONTENT-->
+
+
+	<!-- Include footer-->
+	<%- include("./partials/footer") %>
+
+</body>
+</html>

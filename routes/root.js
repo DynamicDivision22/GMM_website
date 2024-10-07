@@ -23,9 +23,9 @@ router.get('/application', auth.guestAccess, async (req, res) => res.render('app
 }));
 
 /*************************************************************************************************/
-/* Render the GSMM help page
+/* Render the GSMM market page
 /*************************************************************************************************/
-router.get('/help', auth.guestAccess, async (req, res) => res.render('help', {
+router.get('/market', auth.guestAccess, async (req, res) => res.render('market', {
   session: req.session,
   featured: await accountController.getFeaturedAccounts(),
   clean: convert.convert,

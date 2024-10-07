@@ -57,4 +57,20 @@ router.get('/manage', auth.memberAccess, async (req, res) => {
   });
 });
 
+/*************************************************************************************************/
+/* Render the help page
+/*************************************************************************************************/
+router.get('/help', auth.guestAccess, async (req, res) => {
+  // Redirect to account page if session exists
+  if (req.cookies.makerSession || req.headers.authorization) {
+    return res.redirect('/account/manage');
+  }
+
+  return res.render('account/help', {
+    session: req.session,
+    featured: await accountController.getFeaturedAccounts(),
+    clean: convert.convert,
+  });
+});
+
 module.exports = router;
