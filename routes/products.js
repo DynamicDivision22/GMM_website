@@ -4,9 +4,11 @@ const convert = require('html-to-text');
 const accountController = require('../controllers/accountController');
 const productController = require('../controllers/productController');
 const productImageController = require('../controllers/productImageController');
+const productModelController = require('../controllers/productModelController');
 const router = express.Router();
 const PRODUCTS_PER_PAGE = 6;
 const PRODUCT_IMAGES_PER_PAGE = 3;
+const PRODUCT_MODELS_PER_PAGE = 3;
 
 /*************************************************************************************************/
 /* Render the product management page
@@ -45,15 +47,22 @@ router.get('/edit/:id', auth.memberAccess, async (req, res) => {
   }
 
   // Get all of the images associated with a product
-  const images = await productImageController.getProductImagesByName(productInfo.product, PRODUCT_IMAGES_PER_PAGE, 0)
+  const images = await productImageController.getProductImagesByName(productInfo.product, PRODUCT_IMAGES_PER_PAGE, 0);
+  console.log('Fetched Images:', images); // Debug statement
+
+  // Get all of the models associated with a product
+  const models = await productModelController.getProductModelsByName(productInfo.product, PRODUCT_MODELS_PER_PAGE, 0);
+  console.log('Fetched Models:', models); // Debug statement
 
   return res.render('products/edit', {
     session: req.session,
     featured: await accountController.getFeaturedAccounts(),
     product: productInfo,
     images,
+    models,
     page: 1,
     total: Math.ceil(await productImageController.countProductImagesByName(productInfo.product) / PRODUCT_IMAGES_PER_PAGE),
+    totalModels: Math.ceil(await productModelController.countProductModelsByName(productInfo.product) / PRODUCT_MODELS_PER_PAGE),
     clean: convert.convert
   });
 });
