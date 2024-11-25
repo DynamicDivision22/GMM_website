@@ -151,6 +151,19 @@ $(document).on('submit', '.deleteProductImage', async (e) => {
 });
 
 /*************************************************************************************************/
+/* Send product model deletion request to the backend
+/*************************************************************************************************/
+$(document).on('submit', '.deleteProductModel', async (e) => {
+  e.preventDefault();
+
+  axios.delete(e.target.action, {data: {id: e.target.id}}).then((response) => {
+    $(`#card-${e.target.id}`).empty().remove();
+  }).catch((error) => {
+    $('#delete-model-response').empty().show().html(`<div class="response-error"><i class="fa-solid fa-triangle-exclamation"></i> ${error.response.data.error}`).delay(4000).fadeOut(300);
+  });
+});
+
+/*************************************************************************************************/
 /* Send application creation request to the backend
 /*************************************************************************************************/
 $(document).on('submit', '.createApplication', async (e) => {
