@@ -2,6 +2,7 @@ const accountController = require('../controllers/accountController');
 const productImageController = require('../controllers/productImageController');
 const productService = require('../services/productService');
 const validator = require('express-validator');
+const productModelController = require('../controllers/productModelController');
 
 /*************************************************************************************************/
 /* Public Database Methods
@@ -54,7 +55,7 @@ const createProduct = async (req, res) => {
   if (req.isBadFiletype) {
     return res.status(422).json({
       success: false,
-      error: 'You have tried to upload an invalid image',
+      error: 'You have tried to upload an invalid file',
     });
   }
 
@@ -71,9 +72,8 @@ const createProduct = async (req, res) => {
   // Add product to the database
   await productService.createProduct(product);
 
-
   // Add a default product image if one is not supplied
-  if (req.files.length === 0) {
+  if (!req.files['create-product-images']) {
     await productImageController.createProductImage({
       image: '/images/product_images/default.png',
       product_owner: req.session.email,
@@ -82,10 +82,20 @@ const createProduct = async (req, res) => {
   }
 
   // Add user's product images to the database
-  if (req.files.length > 0) {
-    req.files.forEach(async (image) => {
+  if (req.files && req.files['create-product-images']) {
+    req.files['create-product-images'].forEach(async (image) => {
       await productImageController.createProductImage({
         image: `/images/product_images/${image.filename}`,
+        product_owner: req.session.email,
+        product_product: req.body['create-product-name']});
+    });
+  }
+
+  // Add user's product models to the database
+  if (req.files && req.files['create-product-models']) {
+    req.files['create-product-models'].forEach(async (model) => {
+      await productModelController.createProductModel({
+        model: `/models/${model.filename}`,
         product_owner: req.session.email,
         product_product: req.body['create-product-name']});
     });
@@ -146,7 +156,7 @@ const updateProduct = async (req, res) => {
   if (req.isBadFiletype) {
     return res.status(422).json({
       success: false,
-      error: 'You have tried to upload an invalid image',
+      error: 'You have tried to upload an invalid file',
     });
   }
 
@@ -164,8 +174,8 @@ const updateProduct = async (req, res) => {
   await productService.updateProduct(product, (await productService.getProductByName(req.body['update-product-name'])).id);
 
   // Add user's product images to the database
-  if (req.files.length > 0) {
-    req.files.forEach(async (image) => {
+  if (req.files && req.files['update-product-images']) {
+    req.files['update-product-images'].forEach(async (image) => {
       await productImageController.createProductImage({
         image: `/images/product_images/${image.filename}`,
         product_owner: (await productService.getProductByName(req.body['update-product-name'])).account_email,
@@ -173,9 +183,23 @@ const updateProduct = async (req, res) => {
     });
   }
 
+  // Add user's product models to the database
+  if (req.files && req.files['update-product-models']) {
+    req.files['update-product-models'].forEach(async (model) => {
+      await productModelController.createProductModel({
+        model: `/images/product_models/${model.filename}`,
+        product_owner: (await productService.getProductByName(req.body['update-product-name'])).account_email,
+        product_product: req.body['update-product-name']});
+    });
+  }
+
+  // Fetch all models associated with the product
+  const models = await productModelController.getProductModelsByName(req.body['update-product-name'], 10, 0);
+
   return res.status(200).json({
     success: true,
     response: 'Product successfully updated',
+    models
   });
 }
 
@@ -243,6 +267,62 @@ const deleteProductImage = async (req, res) => {
   });
 }
 
+/*************************************************************************************************/
+/* Delete a product model
+/*************************************************************************************************/
+const deleteProductModel = async (req, res) => {
+  // Only allow users with a valid session to access this endpoint
+  if (!req.cookies.makerSession && !req.headers.authorization) {
+    return res.status(403).json({
+      success: false,
+      error: 'You are not authorized to use this endpoint',
+    });
+  }
+
+  // Halt if the user is not verified
+  if (!Number((await accountController.getAccountByEmail(req.session.email)).account_verified)) {
+    return res.status(403).json({
+      success: false,
+      error: 'Only verified accounts may delete a product model',
+    });
+  }
+
+  // Halt if there is a problem with validating the user input
+  if (!validator.validationResult(req).isEmpty()) {
+    return res.status(422).json({
+      success: false,
+      error: validator.validationResult(req).errors[0].msg,
+    });
+  }
+
+  // Get product model information
+  const productModelInfo = await productModelController.getProductModelByID(req.body['id']);
+
+  // Halt if the product model does not exist
+  if (!productModelInfo) {
+    return res.status(422).json({
+      success: false,
+      error: 'The product model you are trying to delete does not exist',
+    });
+  }
+
+  // Halt if the requesting user is not the model owner
+  if (req.session.email !== productModelInfo.product_owner  && !req.session.roles.includes("admin")) {
+    return res.status(403).json({
+      success: false,
+      error: 'You are not authorized to delete this model',
+    });
+  }
+
+  // Delete the product model from the database
+  await productModelController.deleteProductModel(req.body['id']);
+
+  return res.status(200).json({
+    success: true,
+    response: 'Model successfully deleted'
+  });
+};
+
 module.exports = {
   getAllProducts,
   getProductCount,
@@ -253,5 +333,6 @@ module.exports = {
   getProductByID,
   createProduct,
   updateProduct,
-  deleteProductImage
+  deleteProductImage,
+  deleteProductModel
 }
