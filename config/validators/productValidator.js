@@ -1,4 +1,5 @@
 const validator = require('express-validator');
+const { body, param } = require('express-validator');
 
 /*************************************************************************************************/
 /* Validate product creation form input
@@ -92,11 +93,23 @@ const deleteProductImage = [
     .escape()
     .trim()
     .notEmpty()
+    .withMessage('You must provide an model id')
+];
+
+/*************************************************************************************************/
+/* Validate product model deletion form input
+/*************************************************************************************************/
+const deleteProductModel = [
+  validator.check('id')
+    .escape()
+    .trim()
+    .notEmpty()
     .withMessage('You must provide an image id')
 ];
 
 module.exports = {
   createProduct,
   updateProduct,
-  deleteProductImage
+  deleteProductImage,
+  deleteProductModel
 };
