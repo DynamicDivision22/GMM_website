@@ -2,6 +2,7 @@ const productModel = require('../models/productModel');
 const productImageModel = require('../models/productImageModel');
 const accountModel = require('../models/accountModel');
 const logger = require('../config/logger');
+const productModelModel = require('../models/productModelModel');
 
 /*************************************************************************************************/
 /* Define relationships required to successfully union tables together
@@ -138,6 +139,54 @@ const countFeaturedProductsByEmail = async (account_email) => {
   return count;
 };
 
+/*************************************************************************************************/
+/* Get all 3D models associated with a specific product
+/*************************************************************************************************/
+const getProductModelsByProduct = async (product_product) => {
+  const models = await productModelModel.findAll({
+    where: { product_product },
+  }).catch((error) => {
+    logger.error(error);
+  });
+
+  return models;
+};
+
+/*************************************************************************************************/
+/* Get a product model associated with a specific ID
+/*************************************************************************************************/
+const getProductModelByID = async (id) => {
+  const model = await productModelModel.findOne({
+    where: { id },
+  }).catch((error) => {
+    logger.error(error);
+  });
+
+  return model;
+};
+
+/*************************************************************************************************/
+/* Insert a new 3D model into the database
+/*************************************************************************************************/
+const createProductModel = async (model) => {
+  await productModelModel.create(model).catch((error) => {
+    logger.error(error);
+  });
+
+  return true;
+};
+
+/*************************************************************************************************/
+/* Delete a 3D model
+/*************************************************************************************************/
+const deleteProductModel = async (id) => {
+  await productModelModel.destroy({ where: { id } }).catch((error) => {
+    logger.error(error);
+  });
+
+  return true;
+};
+
 module.exports = {
   getProductsByEmail,
   getFeaturedProductsByEmail,
@@ -148,5 +197,9 @@ module.exports = {
   updateProduct,
   deleteProduct,
   countProducts,
-  countFeaturedProductsByEmail
+  countFeaturedProductsByEmail,
+  getProductModelsByProduct,
+  getProductModelByID,
+  createProductModel,
+  deleteProductModel,
 };
