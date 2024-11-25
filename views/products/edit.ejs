@@ -19,7 +19,7 @@
 		<div class="container px-4 py-2 rounded-4" id="update-product" data-aos="fade-right">
 			<h2 class="border-bottom">UPDATE PRODUCT</h2>
             <h4 class="h4 mb-3 fw-normal pb-1" id="update-product-response"></h4>
-			<form class="updateProduct" action="/api/product/update">
+			<form class="updateProduct" action="/api/product/update" enctype="multipart/form-data">
 				<input type="checkbox" class="form-check-input" id="update-product-featured" name="update-product-featured">
 				<label for="update-product-featured" class="form-label">Feature product on your GSMM profile</label>
 				<div class="form-floating">
@@ -44,6 +44,9 @@
 				<br>
 				<label for="update-product-images" class="form-label">Product Images</label>
 				<input class="form-control" type="file" id="update-product-images" name="update-product-images" multiple="multiple" accept="image/*" />
+				<br>
+				<label for="update-product-models" class="form-label">Product 3D Models</label>
+				<input class="form-control" type="file" id="update-product-models" name="update-product-models" multiple="multiple" accept=".glb" />
 				<br>
 				<button class="btn btn-dark w-100 py-2" type="submit">Update Product</button>
 			  </form>
@@ -118,6 +121,77 @@
 				<!-- END PAGINATION-->
 		</div>
 			<!-- END PRODUCT IMAGES EDIT-->
+		<br>
+		<br>
+		<!-- BEGIN PRODUCT MODELS EDIT-->
+		<div class="container px-4 py-2" id="models" data-aos="fade-right">
+			<h2 class="pb-1 border-bottom">DELETE PRODUCT MODELS</h2>
+			<h4 class="h4 mb-3 fw-normal pb-1" id="delete-model-response"></h4>
+			<% if (locals.models && locals.models.length > 0) { %>
+				<div class="row row-cols-1 row-cols-md-3 g-4">
+					<% locals.models.forEach(model => { %>
+						<div class="col-sm" id="card-<%= model.id %>">
+							<div class="card h-100" style="max-width: 400px;">
+								<div class="card-body" style="min-height: 200px;"> <!-- Set min-height -->
+									<p class="card-text" style="word-wrap: break-word;"><%= model.model %></p> <!-- Adjusted style -->
+								</div>
+								<div class="card-footer" style="position: absolute; bottom: 0; width: 100%;">
+									<form class="deleteProductModel" id="<%= model.id %>" action="/api/product/model/delete"><button class="btn btn-dark w-100 py-2">DELETE MODEL</button></form>
+								</div>
+							</div>
+						</div>
+					<% }) %>
+				</div>
+				<% } else { %>
+					<p>There are no product models to display</p>
+				<% } %>
+				<br>
+				<!-- BEGIN PAGINATION-->
+				<% if (locals.totalModels > 1) { %>
+					<nav>
+					<ul class="pagination justify-content-center" data-bs-theme="dark">
+						<% if (locals.offsetModels === 0) { %>
+						<li class="page-item disabled">
+							<a class="page-link">Previous</a>
+						</li>
+						<% } else { %>
+						<a class="page-link" href="/products/edit/<%= locals.product.id %>/models/page/<%= locals.pageModels - 1 %>" tabindex="-1"> 
+						Previous
+						</a>
+						<%  } %>
+						<% var i = (Number(locals.pageModels) > 5 ? Number(locals.pageModels) - 4 : 1) %>
+						<% for(; i <= (Number(locals.pageModels) + 4) && i <= locals.totalModels; i++) { %>
+						<% if (locals.pageModels === i) { %>
+							<li class="page-item active">
+							<a class="page-link" href="#"><%=i%> <span class="sr-only">
+								(current)
+							</span></a>
+						</li>
+						<% } else { %>
+							<li class="page-item">
+							<a class="page-link" href="/products/edit/<%= locals.product.id %>/models/page/<%=i%>">
+								<%=i%>
+							</a>
+							</li>
+						<% } %>
+						<% } %>
+						<li class="page-item">
+						<% if ((locals.pageModels + 1) > locals.totalModels) { %>
+							<li class="page-item disabled">
+							<a class="page-link">Next</a>
+							</li>
+						<% } else { %>
+							<a class="page-link" href="/products/edit/<%= locals.product.id %>/models/page/<%= locals.pageModels + 1 %>">
+							Next
+							</a>
+						<% } %>
+						</li>
+					</ul>
+					</nav>
+			<%}%>
+				<!-- END PAGINATION-->
+		</div>
+		<!-- END PRODUCT MODELS EDIT-->
     </div>
  	<!-- END PAGE CONTENT-->
     
