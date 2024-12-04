@@ -18,13 +18,15 @@
     <!-- BEGIN PAGE CONTENT-->
     
     <%- include("partials/featured") %>
+    
     <!-- how to add in AR component on its own, uncomment to see it in webpage -->
+    
     <!-- <body style = "margin: 0px;">
 		<model-viewer
 		src = "public/models/stapler.glb"
-		ar
-		>
+		ar>
 	</model-viewer> -->
+    
 
 	<div class="content-container content-wrap">
         <div class="container px-4 py-2" id="makers" data-aos="fade-right">
@@ -35,14 +37,18 @@
                 <% locals.products.forEach(product => { %>
                     <div class="col-sm">
                         <div class="card h-100" style="max-width: 400px;">
+                            
+                            <!-- show regular image here  -->
                             <img src="<%= product.product_images[0].image %>" class="card-img-top" alt="product-image" style="height: auto; width: auto;">
-                            <!-- need to have the model-viewer here with the img src as the glb file  -->
-                            <!-- <model-viewer
-                                src = "public/models/stapler.glb"
-                                src = "<%= product.product_images[0].image %>"
-                                ar
-                                >
-                            </model-viewer> -->
+                            
+                            <!-- Display the 3D model using model-viewer -->
+                            <% if (product.product_models && product.product_models.length > 0) { %>
+                                <model-viewer
+                                    src="<%= product.product_models[0].model %>"
+                                    ar>
+                                </model-viewer>
+                                <% } %>
+
                             <div class="card-body">
                                 <h5 class="card-title"><%= product.product %></h5>
                                 <% if (product.summary != null) { %>

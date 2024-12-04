@@ -57,7 +57,7 @@
         <!-- BEGIN PRODUCT MANAGE-->
         <div class="container px-4 py-2 rounded-4" id="manage-products" data-aos="fade-right">
 			<h2 class="pb-1 border-bottom">MANAGE PRODUCTS</h2>
-			<% if (locals.products.length > 0) { %>
+			<% if (locals.featured && locals.products.length > 0) { %>
 				<table id="product-table">
 				<tr>
 					<th>Product</th>
