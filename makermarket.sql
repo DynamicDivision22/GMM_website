@@ -193,3 +193,13 @@ INSERT INTO `socialmedia_links` VALUES (36,'https:&#x2F;&#x2F;www.twitter.com&#x
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed
+
+CREATE TABLE `event_form_submissions` (
+  `id` INT NOT NULL AUTO_INCREMENT,                     
+  `event_name` VARCHAR(255) NOT NULL,                   -- Name of the event
+  `start_time` TIME NOT NULL,                           -- Start time of the event
+  `end_time` TIME NOT NULL,                             -- End time of the event
+  `description` TEXT,                                   
+  PRIMARY KEY (`id`),                                   
+  UNIQUE KEY `id_UNIQUE` (`id`)                         
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
