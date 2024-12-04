@@ -10,7 +10,7 @@ market.use(express.json());
 market.use(bodyParser.json({ limit: '1MB' }));
 market.use(bodyParser.urlencoded({ limit: '1MB', extended: true }));
 
-market.use(cookieParser({ limit: '1MB' }));
+market.use(cookieParser());
 market.use(express.static(path.join(__dirname, 'views/static')));
 market.set("views", path.join(__dirname, 'views'));
 market.set("view engine", "ejs");
@@ -25,6 +25,17 @@ market.use('/makers', require('./routes/makers'));
 market.use('/account', require('./routes/account'));
 market.use('/products', require('./routes/products'));
 market.use('/admin', require('./routes/admin'));
+
+var publicDir = path.join(__dirname, 'gssmAR/public');
+
+market.use("/public", express.static(publicDir));
+market.get("/", function (req, res){
+    res.render("partials/navigation", { session: req.session });
+});
+market.get("/arcomponent", function (req, res){
+    res.render("arcomponent", { session: req.session });
+});
+market.use('/arcomponent', require('./routes/products'));
 
 const auth = require('./middleware/auth');
 const convert = require('html-to-text');
