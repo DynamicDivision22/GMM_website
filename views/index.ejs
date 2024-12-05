@@ -1,64 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<%- include("./partials/header") %>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include("./partials/header") %>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .content-container {
+            flex-grow: 1;
+        }
+
+        .container {
+            margin-bottom: 50px;
+        }
+
+        footer {
+            margin-top: auto;
+            padding-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .content-container {
+                padding-bottom: 60px;
+            }
+        }
+
+        .container-articles {
+            margin-bottom: 120px; /* Adjust this value to add extra space after the articles */
+        }
+    </style>
 </head>
 <body>
 
-	<!-- Include navigation-->
-	<%- include("./partials/navigation") %>
+    <!-- Include navigation-->
+    <%- include("./partials/navigation") %>
 
-	<!-- Welcome to the Graduate Student Maker's Market-->
-	<div class="content-container content-wrap vh-100" style="background-image: url('/images/Welcome_bg.jpg'); background-size: cover;">
-		<div class="container d-flex align-items-center justify-content-center text-center h-100">
+    <!-- Welcome to the Graduate Student Maker's Market-->
+    <div class="content-container content-wrap vh-100" style="background-image: url('/images/Welcome_bg.jpg'); background-size: cover;">
+        <div class="container d-flex align-items-center justify-content-center text-center h-100">
             <div class="text-white">
-              <h1 class="display-1 border-bottom" data-aos="zoom-in-down" data-aos-duration="1500">Welcome</h1>
-              <ul class="list-inline">
-				<li class="list-inline-item display-6" data-aos="zoom-in-up" data-aos-duration="1800">To</li>
-				<li class="list-inline-item display-6" data-aos="zoom-in-up" data-aos-duration="1800">The</li>
-			  </ul>
-			  <br>
-			  <br>
-			  <ul class="list-inline">
-				<li class="list-inline-item display-1" data-aos="fade-right" data-aos-duration="2000">Graduate </li>
-				<li class="list-inline-item display-1" data-aos="fade-left" data-aos-duration="2000"> Student</li>
-			</ul>
-			<ul class="list-inline">
-				<li class="list-inline-item display-1" data-aos="fade-right" data-aos-duration="3000">Maker's </li>
-				<li class="list-inline-item display-1" data-aos="fade-left" data-aos-duration="3000"> Market</li>
-			</ul>
+                <h1 class="display-1 border-bottom" data-aos="zoom-in-down" data-aos-duration="1500">Welcome</h1>
+                <ul class="list-inline">
+                    <li class="list-inline-item display-6" data-aos="zoom-in-up" data-aos-duration="1800">To</li>
+                    <li class="list-inline-item display-6" data-aos="zoom-in-up" data-aos-duration="1800">The</li>
+                </ul>
+                <br>
+
+                <br>
+                <ul class="list-inline">
+                    <li class="list-inline-item display-1" data-aos="fade-right" data-aos-duration="2000">Graduate </li>
+                    <li class="list-inline-item display-1" data-aos="fade-left" data-aos-duration="2000"> Student</li>
+                </ul>
+                <ul class="list-inline">
+                    <li class="list-inline-item display-1" data-aos="fade-right" data-aos-duration="3000">Maker's </li>
+                    <li class="list-inline-item display-1" data-aos="fade-left" data-aos-duration="3000"> Market</li>
+                </ul>
             </div>
         </div>
-			
-	</div>
+    </div>
 
-	<!-- Include featured-->
-	<%- include("./partials/featured") %>
+    <!-- Include featured-->
+    <%- include("./partials/featured") %>
 
-	<div class="container px-4 py-2"></div>
+    <div class="container px-4 py-2"></div>
 
-	<!-- Include articles-->
-	<%- include("./partials/articles") %>
+    <div class="container px-4 py-2 rounded-4" id="about-gsmm" data-aos="fade-right" style="background-color: beige;">
+        <h2 class="pb-1 border-bottom">GSMM Information</h2>
+        <p>The Graduate Student's Maker's Market (GSMM) is a platform for the professional work of graduate students at the University of Arkansas in Fayetteville, Arkansas.</p>
+    </div>
 
- 	<!-- BEGIN PAGE CONTENT-->
-	 <div class="content-container content-wrap">
-		
-		<div class="container px-4 py-2"></div>
-		
-		<div class="container px-4 py-2 rounded-4" id="about-gsmm" data-aos="fade-right" style="background-color: beige;">
-			<h2 class="pb-1 border-bottom">GSMM Information</h2>
-			<p>The Graduate Student's Maker's Market (GSMM) is a platform for the professional work of graduate students at the University of Arkansas in Fayetteville, Arkansas. This market offers a variety of services including workshops, consultations, and most importantly first hand experience and feedback. Each month we highlight the work of at least one maker who has completed our three part workshop series.</p>
-		</div>
+    <div class="container px-4 py-2"></div>
 
-		<div class="container px-4 py-2"></div>
-  </div>
- 	<!-- END PAGE CONTENT-->
+    <div class="container py-4" id="calendar-section" data-aos="fade-up">
+        <h2 class="pb-2 border-bottom">Add Events to GSMM Calendar</h2>
+        <div id="calendar" class="mb-4"></div>
 
+        <div class="event-form rounded-4 p-4" style="background-color: #f9f9f9;">
+            <h3 class="pb-1 border-bottom">Add an Event</h3>
+            <form id="eventForm">
+                <div class="mb-3">
+                    <label for="eventTitle" class="form-label">Event Title</label>
+                    <input type="text" class="form-control" id="eventTitle" placeholder="Enter event title" required>
+                </div>
+                <div class="mb-3">
+                    <label for="eventDate" class="form-label">Event Date</label>
+                    <input type="date" class="form-control" id="eventDate" required>
+                </div>
+                <div class="mb-3">
+                    <label for="eventTime" class="form-label">Event Start Time</label>
+                    <input type="time" class="form-control" id="eventTime" required>
+                </div>
+                <div class="mb-3">
+                    <label for="eventEndTime" class="form-label">Event End Time</label>
+                    <input type="time" class="form-control" id="eventEndTime" required>
+                </div>
+                <div class="mb-3">
+                    <label for="eventDescription" class="form-label">Event Description</label>
+                    <textarea class="form-control" id="eventDescription" rows="3" placeholder="Enter event description"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Add Event</button>
+            </form>
+        </div>
+    </div>
 
-	<!-- Include footer-->
-	<%- include("./partials/footer") %>
+    <!-- Include articles-->
+    <%- include("./partials/articles") %>
+
+    <div class="container-articles"></div> <!-- Extra space added after articles section -->
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+  const calendarEl = document.getElementById('calendar');
+  const calendar = new FullCalendar.Calendar(calendarEl, {
+    initialView: 'dayGridMonth',
+    events: [] // Initially empty
+  });
+  calendar.render();
+
+  const eventForm = document.getElementById('eventForm');
+  eventForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    const title = document.getElementById('eventTitle').value;
+    const date = document.getElementById('eventDate').value;
+    const startTime = document.getElementById('eventTime').value;
+    const endTime = document.getElementById('eventEndTime').value;
+    const description = document.getElementById('eventDescription').value;
+
+    if (title && date && startTime && endTime) {
+      const start = `${date}T${startTime}`;
+      const end = `${date}T${endTime}`;
+
+      // Add to FullCalendar
+      calendar.addEvent({
+        title,
+        start,
+        end,
+        description
+      });
+
+      // Post to backend
+      fetch('/add-event', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          title,
+          startTime: start,
+          endTime: end,
+          description
+        })
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.success) {
+            alert('Event added successfully!');
+          } else {
+            alert('Error adding event: ' + data.message);
+          }
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          alert('There was an error submitting the event.');
+        });
+    } else {
+      alert('Please fill in all required fields.');
+    }
+  });
+});
+
+    </script>
+    
+
+    <!-- Include footer-->
+    <%- include("./partials/footer") %>
 
 </body>
 </html>

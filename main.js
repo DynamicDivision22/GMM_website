@@ -19,6 +19,7 @@ market.use('/api/account', require('./routes/api/v1/accountAPI'));
 market.use('/api/product', require('./routes/api/v1/productAPI'));
 market.use('/api/socials', require('./routes/api/v1/socialMediaLinkAPI'));
 market.use('/api/application', require('./routes/api/v1/applicationAPI'));
+market.use('/api/event', require('./routes/api/v1/calenderAPI'));  // This is where event-related routes are handled.
 
 market.use('/', require('./routes/root'));
 market.use('/makers', require('./routes/makers'));
@@ -41,11 +42,31 @@ const auth = require('./middleware/auth');
 const convert = require('html-to-text');
 const accountController = require('./controllers/accountController');
 
+let events = [];
+
+// Add Event Route (handle POST requests to add events)
+market.post('/add-event', (req, res) => {
+    const { title, startTime, endTime, description } = req.body;
+
+    // Save event (for now it's an in-memory array, but you should persist it in a DB)
+    const newEvent = { title, startTime, endTime, description };
+    events.push(newEvent);
+
+    // Optionally log it to the console for debugging
+    console.log('Event added:', newEvent);
+
+    // Send success response
+    return res.status(200).json({ success: true, message: 'Event added successfully.', event: newEvent });
+});
+
+// Catch-all 404 route
 market.get('*', auth.guestAccess, async (req, res) => {
     res.status(404).render('errors/404.ejs', { session: req.session,
-    featured: await accountController.getFeaturedAccounts(),
-    clean: convert.convert,
+        featured: await accountController.getFeaturedAccounts(),
+        clean: convert.convert,
     });
 });
 
+// Start the server
 market.listen(3001, 'localhost')
+
