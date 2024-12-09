@@ -95,7 +95,7 @@ const createProduct = async (req, res) => {
   if (req.files && req.files['create-product-models']) {
     req.files['create-product-models'].forEach(async (model) => {
       await productModelController.createProductModel({
-        model: `/models/${model.filename}`,
+        model: `/images/product_models/${model.filename}`,
         product_owner: req.session.email,
         product_product: req.body['create-product-name']});
     });
