@@ -6,6 +6,15 @@
 	<link href="/css/makerprofile.css" rel="stylesheet">
 	<%- include("../partials/header") %>
 </head>
+<!-- Import the component -->
+<script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+<style>
+    model-viewer{
+        width: 100%;
+        height: 500px;
+    }
+    
+</style>
 <body>
 
 	<!-- Include navigation-->
@@ -56,7 +65,7 @@
 							<div class="card h-100" style="max-width: 400px;">
 								<img src="<%= image.image %>" class="card-img-top" alt="product-image" style="height: auto; width: auto;">
 								<div class="card-footer" style="position: absolute; bottom: 0; width: 100%;">
-									<button class="btn btn-dark w-100 py-2" onclick="window.location.href = '<%= image.image %>'">VIEW FULL IMAGE</button>
+									<button class="btn btn-dark w-100 py-2" onclick="window.location.href = '<%= image.image %>'">VIEW FULL IMAGE</button> <br></br>
 								</div>
 							</div>
 						</div>
@@ -66,6 +75,34 @@
 					<p>There are no product images to display</p>
 				<% } %>
 				<br>
+
+		<!-- BEGIN PRODUCT MODELS-->
+		<div class="container px-4 py-2" id="featured" data-aos="fade-right">
+			<h2 class="pb-1 border-bottom">PRODUCT MODELS</h2>
+			<% if (locals.models.length > 0) { %>
+				<div class="row row-cols-1 row-cols-md-3 g-4">
+					<% locals.models.forEach(model => { %>
+						<div class="col-sm">
+							<div class="card h-100" style="max-width: 400px;">
+								<body style = "margin: 0px;">
+									<model-viewer
+									src = "<%= model.model %>"
+									ar
+									camera-controls> 
+								</model-viewer>
+								<div class="card-footer" style="position: absolute; bottom: 0; width: 100%;">
+									<a href="/arcomponent?model=<%= encodeURIComponent(model.model) %>" target="_blank">
+										<button class="btn btn-dark w-100 py-2">VIEW IN AR</button>
+									</a>
+								</div>
+							</div>
+						</div>
+					<% }) %>
+				</div>
+				<% } else { %>
+					<p>There are no product models to display</p>
+				<% } %>
+
 				<!-- BEGIN PAGINATION-->
 				<% if (locals.total > 1) { %>
 					<nav>

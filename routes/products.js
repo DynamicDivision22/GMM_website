@@ -105,12 +105,14 @@ router.get('/edit/:id/page/:page', auth.memberAccess, async (req, res) => {
 
   // Get all of the images associated with a product
   const images = await productImageController.getProductImagesByName(productInfo.product, PRODUCT_IMAGES_PER_PAGE, offset)
+  const models = await productModelController.getProductModelsByName(productInfo.product, PRODUCT_MODELS_PER_PAGE, 0)
 
   return res.render('products/edit', {
     session: req.session,
     featured: await accountController.getFeaturedAccounts(),
     product: productInfo,
     images,
+    models,
     page,
     offset,
     total,
@@ -139,12 +141,14 @@ router.get('/:id', auth.guestAccess, async (req, res) => {
 
   // Get all of the images associated with a product
   const images = await productImageController.getProductImagesByName(product.product, PRODUCT_IMAGES_PER_PAGE, 0)
+  const models = await productModelController.getProductModelsByName(product.product, PRODUCT_MODELS_PER_PAGE, 0)
 
   return res.render('products/profile', {
     session: req.session,
     featured: await accountController.getFeaturedAccounts(),
     product,
     images,
+    models,
     page: 1,
     total: Math.ceil(await productImageController.countProductImagesByName(product.product) / PRODUCT_IMAGES_PER_PAGE),
     clean: convert.convert,
@@ -184,12 +188,14 @@ router.get('/:id/page/:page', auth.guestAccess, async (req, res) => {
 
   // Get all of the images associated with a product
   const images = await productImageController.getProductImagesByName(product.product, PRODUCT_IMAGES_PER_PAGE, offset)
+  const models = await productModelController.getProductModelsByName(product.product, PRODUCT_MODELS_PER_PAGE, 0)
 
   return res.render('products/profile', {
     session: req.session,
     featured: await accountController.getFeaturedAccounts(),
     product,
     images,
+    models,
     page,
     offset,
     total,
@@ -204,6 +210,7 @@ router.get('/', auth.guestAccess, async (req, res) => res.render('products/produ
   session: req.session,
   featured: await accountController.getFeaturedAccounts(),
   products: await productController.getAllProducts(PRODUCTS_PER_PAGE, 0),
+  // models: await productModelController.getAllProductModels(PRODUCT_MODELS_PER_PAGE, 0),
   page: 1,
   offset: 0,
   total: Math.ceil(await productController.getProductCount() / PRODUCTS_PER_PAGE),
