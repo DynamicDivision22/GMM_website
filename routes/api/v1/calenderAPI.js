@@ -2,19 +2,19 @@ const express = require('express');
 const router = express.Router();
 const Event = require('../../../models/calender');
 
-router.post('/add-event', async (req, res) => {
-  const { title, startTime, endTime, description } = req.body;
+router.post('/add-event', async (req, res) => { 
+  const { event_name, startTime, endTime, description } = req.body;
 
   
-  if (!title || !startTime || !endTime) {
-    return res.status(400).json({ message: 'Title, start time, and end time are required.' });
+  if (!event_name || !startTime || !endTime) {
+    return res.status(400).json({ message: 'Event name, start time, and end time are required.' });
   }
 
   try {
     const newEvent = await Event.create({
-      title,
-      start: startTime, 
-      end: endTime, 
+      event_name,
+      start_time: startTime, 
+      end_time: endTime, 
       description: description || '', 
     });
     res.status(201).json({ success: true, event: newEvent });
@@ -24,20 +24,26 @@ router.post('/add-event', async (req, res) => {
   }
 });
 
-router.get('/get-events', async (req, res) => {
+
+router.get('/get-events', async (req, res) => { //gets data from database to send to frontend
   try {
-      // Fetch all events from the database
-      const events = await Event.findAll();
-      console.log('Events fetched:', events);
-      
-      // Send the events as a JSON response
-      res.status(200).json(events);
+    const events = await Event.findAll();
+    const formattedEvents = events.map(event => ({
+      title: event.event_name, 
+      start: new Date(event.start_time).toISOString(), //formats the time in full calendar format
+      end: new Date(event.end_time).toISOString(),
+      description: event.description || ''
+    }));
+    res.status(200).json(formattedEvents);
   } catch (error) {
-      console.error('Error fetching events:', error);
-      res.status(500).json({ message: 'Error fetching events' });
+    console.error('Error fetching events:', error);
+    res.status(500).json({ message: 'Error fetching events' });
   }
 });
 
-
-
 module.exports = router;
+
+
+
+
+

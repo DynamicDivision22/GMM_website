@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 const db = require('../config/db');
 
-const Event = db.define('events', {
+const EventFormSubmission = db.define('EventFormSubmission', {
     id: {
       type: Sequelize.DataTypes.INTEGER,
       autoIncrement: true,
@@ -9,15 +9,15 @@ const Event = db.define('events', {
       unique: true,
       allowNull: false,
     },
-    title: {
+    event_name: {
       type: Sequelize.DataTypes.STRING,
       allowNull: false,
     },
-    start: { 
+    start_time: { 
       type: Sequelize.DataTypes.DATE,
       allowNull: false,
     },
-    end: { 
+    end_time: { 
       type: Sequelize.DataTypes.DATE,
       allowNull: false,
     },
@@ -25,18 +25,10 @@ const Event = db.define('events', {
       type: Sequelize.DataTypes.TEXT,
       allowNull: true,
     },
-    createdAt: {
-      type: Sequelize.DataTypes.DATE,
-      defaultValue: Sequelize.DataTypes.NOW,
-      allowNull: false,
-    },
-    updatedAt: {
-      type: Sequelize.DataTypes.DATE,
-      defaultValue: Sequelize.DataTypes.NOW,
-      allowNull: false,
-    },
   }, {
-    timestamps: true, 
-    underscored: true,
+    tableName: 'event_form_submissions',  
+    timestamps: false,
   });
+
+  module.exports = EventFormSubmission;
   

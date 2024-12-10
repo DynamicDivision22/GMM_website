@@ -117,68 +117,82 @@
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.4/index.global.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-  const calendarEl = document.getElementById('calendar');
-  const calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    events: [] // Initially empty
-  });
-  calendar.render();
+            const calendarEl = document.getElementById('calendar');
+            
+            // Initialize FullCalendar
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: async function(info, successCallback, failureCallback) {
+                    try {
+                        const response = await fetch('/get-events'); // Fetch events from the backend
+                        const events = await response.json();
+                        successCallback(events); // Pass the events to FullCalendar
+                    } catch (error) {
+                        console.error('Error fetching events:', error);
+                        failureCallback(error); // Handle error case
+                    }
+                }
+            });
 
-  const eventForm = document.getElementById('eventForm');
-  eventForm.addEventListener('submit', function (e) {
-    e.preventDefault();
+            calendar.render(); 
+            
 
-    const title = document.getElementById('eventTitle').value;
-    const date = document.getElementById('eventDate').value;
-    const startTime = document.getElementById('eventTime').value;
-    const endTime = document.getElementById('eventEndTime').value;
-    const description = document.getElementById('eventDescription').value;
+            // Handle event form submission
+            const eventForm = document.getElementById('eventForm');
+            eventForm.addEventListener('submit', function (e) {
+                e.preventDefault();
 
-    if (title && date && startTime && endTime) {
-      const start = `${date}T${startTime}`;
-      const end = `${date}T${endTime}`;
+                const event_name = document.getElementById('eventTitle').value;
+                const date = document.getElementById('eventDate').value;
+                const startTime = document.getElementById('eventTime').value;
+                const endTime = document.getElementById('eventEndTime').value;
+                const description = document.getElementById('eventDescription').value;
 
-      // Add to FullCalendar
-      calendar.addEvent({
-        title,
-        start,
-        end,
-        description
-      });
+                if (event_name && date && startTime && endTime) {
+                    const start_time = `${date}T${startTime}`;
+                    const end_time = `${date}T${endTime}`;
 
-      // Post to backend
-      fetch('/add-event', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          title,
-          startTime: start,
-          endTime: end,
-          description
-        })
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.success) {
-            alert('Event added successfully!');
-          } else {
-            alert('Error adding event: ' + data.message);
-          }
-        })
-        .catch((error) => {
-          console.error('Error:', error);
-          alert('There was an error submitting the event.');
+                    // Add event to the calendar
+                    calendar.addEvent({
+                        title: event_name,
+                        start: start_time,
+                        end: end_time,
+                        description: description
+                        
+                    });
+
+                    // Send to backend to save event
+                    fetch('/add-event', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            event_name,
+                            startTime: start_time,
+                            endTime: end_time,
+                            description
+                        })
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            alert('Event added successfully!');
+
+                        } else {
+                            alert('Error adding event: ' + data.message);
+                        }
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        alert('There was an error submitting the event.');
+                    });
+                } else {
+                    alert('Please fill in all required fields.');
+                }
+            });
         });
-    } else {
-      alert('Please fill in all required fields.');
-    }
-  });
-});
-
     </script>
-    
 
     <!-- Include footer-->
     <%- include("./partials/footer") %>
